@@ -1,0 +1,6 @@
+{
+  "name": "Chácara Condomínio Alphaville | Marcello Soares",
+  "description": "Chácara no Condomínio Alphaville em Bom Despacho - MG, com 3.120 m² de área total, casa com 320 m², piscina, espaço gourmet e projeto pronto para construir dois chalés.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
