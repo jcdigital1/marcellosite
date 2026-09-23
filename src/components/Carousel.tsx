@@ -12,9 +12,21 @@ export function Carousel({ onOpenLightbox }: CarouselProps) {
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchMoveX, setTouchMoveX] = useState<number | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
 
   const containerRef = useRef<HTMLDivElement>(null);
   const total = PROPERTY_IMAGES.length;
+
+  // Ultra-Fast Image Preloader: Pre-cache all 13 high-resolution photos immediately
+  useEffect(() => {
+    PROPERTY_IMAGES.forEach((item, idx) => {
+      const img = new Image();
+      img.src = item.url;
+      img.onload = () => {
+        setLoadedImages((prev) => ({ ...prev, [idx]: true }));
+      };
+    });
+  }, []);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % total);
@@ -33,13 +45,12 @@ export function Carousel({ onOpenLightbox }: CarouselProps) {
     return () => clearInterval(timer);
   }, [isHovered, nextSlide]);
 
-  // Efeito carrossel ao descer a página (scroll-responsive perspective)
+  // Scroll perspective reaction
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      // Calculate how far the carousel is relative to center of screen (-1 to 1)
       const centerOffset = (rect.top + rect.height / 2 - windowHeight / 2) / (windowHeight / 2);
       const clampedOffset = Math.max(-1, Math.min(1, centerOffset));
       setScrollProgress(clampedOffset);
@@ -49,6 +60,16 @@ export function Carousel({ onOpenLightbox }: CarouselProps) {
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Pre-load adjacent images ahead of time
+  useEffect(() => {
+    const nextIdx = (currentIndex + 1) % total;
+    const prevIdx = (currentIndex - 1 + total) % total;
+    [nextIdx, prevIdx].forEach((idx) => {
+      const img = new Image();
+      img.src = PROPERTY_IMAGES[idx].url;
+    });
+  }, [currentIndex, total]);
 
   // Mobile swipe handling
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -73,8 +94,6 @@ export function Carousel({ onOpenLightbox }: CarouselProps) {
   };
 
   const currentPhoto = PROPERTY_IMAGES[currentIndex];
-
-  // Calculate 3D tilt based on scrolling descent
   const scrollTiltX = scrollProgress * 3;
   const scrollScale = 1 - Math.abs(scrollProgress) * 0.02;
 
@@ -89,7 +108,7 @@ export function Carousel({ onOpenLightbox }: CarouselProps) {
           transform: `perspective(1000px) rotateX(${scrollTiltX}deg) scale(${scrollScale})`,
           transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
-        className="relative group rounded-2xl sm:rounded-3xl overflow-hidden border border-sky-400/25 bg-[#070d1e] shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_20px_rgba(56,189,248,0.15)] select-none transition-all duration-300 hover:border-sky-400/50"
+        className="relative group rounded-2xl sm:rounded-3xl overflow-hidden border border-sky-400/30 bg-[#070d1e] shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_25px_rgba(56,189,248,0.2)] select-none transition-all duration-300 hover:border-sky-400/60"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onTouchStart={handleTouchStart}
@@ -97,16 +116,16 @@ export function Carousel({ onOpenLightbox }: CarouselProps) {
         onTouchEnd={handleTouchEnd}
       >
         {/* Top Metallic Specular Rim */}
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-300 to-transparent z-30 opacity-60" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-300 to-transparent z-30 opacity-70" />
 
         {/* 3D Photo Counter & Zoom button */}
         <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-          <div className="px-3.5 py-1.5 rounded-full bg-black/75 backdrop-blur-md border border-white/15 text-xs font-mono font-bold text-sky-200 tracking-wider shadow-lg">
+          <div className="px-3.5 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/20 text-xs font-mono font-bold text-sky-200 tracking-wider shadow-xl">
             {String(currentIndex + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
           </div>
           <button
             onClick={() => onOpenLightbox(currentIndex)}
-            className="p-2 rounded-full bg-black/75 hover:bg-sky-950/90 backdrop-blur-md border border-sky-400/30 text-sky-300 hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-lg cursor-pointer"
+            className="p-2 rounded-full bg-black/80 hover:bg-sky-950/90 backdrop-blur-md border border-sky-400/40 text-sky-300 hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-xl cursor-pointer"
             title="Ampliar foto em tela cheia"
             aria-label="Ampliar foto em tela cheia"
           >
@@ -114,18 +133,23 @@ export function Carousel({ onOpenLightbox }: CarouselProps) {
           </button>
         </div>
 
-        {/* Slide Image Container */}
+        {/* Slide Image Container com Carregamento Otimizado Instantâneo */}
         <div
           onClick={() => onOpenLightbox(currentIndex)}
-          className="relative w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] cursor-pointer overflow-hidden flex items-center justify-center bg-black/50"
+          className="relative w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] cursor-pointer overflow-hidden flex items-center justify-center bg-[#060b17]"
         >
+          {/* Shimmer loading background while image is settling */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[lightSweep_2s_infinite] pointer-events-none" />
+
           <img
             key={currentPhoto.id}
             src={currentPhoto.url}
             alt={currentPhoto.alt}
             referrerPolicy="no-referrer"
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.015]"
+            decoding="async"
             loading="eager"
+            fetchPriority="high"
+            className="w-full h-full object-cover transition-all duration-500 ease-out group-hover:scale-[1.015]"
           />
 
           {/* Depth vignette */}
@@ -157,7 +181,7 @@ export function Carousel({ onOpenLightbox }: CarouselProps) {
         </button>
       </div>
 
-      {/* 3D Thumbnails Scrub Bar */}
+      {/* 3D Thumbnails Scrub Bar com Carregamento Otimizado */}
       <div className="mt-5 flex items-center justify-center gap-2 sm:gap-2.5 overflow-x-auto pb-2 scrollbar-none">
         {PROPERTY_IMAGES.map((item, idx) => (
           <button
@@ -174,20 +198,19 @@ export function Carousel({ onOpenLightbox }: CarouselProps) {
               src={item.url}
               alt=""
               referrerPolicy="no-referrer"
+              decoding="async"
+              loading={idx < 5 ? 'eager' : 'lazy'}
               className="w-full h-full object-cover"
-              loading="lazy"
             />
           </button>
         ))}
       </div>
 
-      {/* Efeito Carrossel Contínuo Dinâmico ao descer (Smooth continuous photo stream) */}
+      {/* Efeito Carrossel Contínuo Dinâmico ao descer */}
       <div className="mt-8 pt-4 overflow-hidden relative">
-        {/* Soft edge fade masks */}
         <div className="absolute inset-y-0 left-0 w-12 sm:w-20 bg-gradient-to-r from-[#070b16] to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-y-0 right-0 w-12 sm:w-20 bg-gradient-to-l from-[#070b16] to-transparent z-10 pointer-events-none" />
 
-        {/* Gliding carousel ribbon */}
         <div className="animate-carousel-stream flex gap-3">
           {[...PROPERTY_IMAGES, ...PROPERTY_IMAGES].map((img, i) => (
             <div
@@ -199,8 +222,9 @@ export function Carousel({ onOpenLightbox }: CarouselProps) {
                 src={img.url}
                 alt=""
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover"
+                decoding="async"
                 loading="lazy"
+                className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-sky-950/20 hover:bg-transparent transition-colors" />
             </div>

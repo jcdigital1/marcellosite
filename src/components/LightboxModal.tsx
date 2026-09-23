@@ -139,10 +139,13 @@ export function LightboxModal({
           onClick={() => setIsZoomed(!isZoomed)}
         >
           <img
+            key={currentImage.id}
             src={currentImage.url}
             alt={currentImage.alt}
             referrerPolicy="no-referrer"
-            className="max-h-[70vh] sm:max-h-[78vh] w-auto max-w-full object-contain rounded-xl shadow-2xl transition-opacity duration-300"
+            decoding="async"
+            loading="eager"
+            className="max-h-[70vh] sm:max-h-[78vh] w-auto max-w-full object-contain rounded-xl shadow-2xl transition-all duration-300"
           />
         </div>
 
