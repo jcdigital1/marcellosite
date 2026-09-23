@@ -58,38 +58,41 @@ function Card3DTilt({ value, label, icon }: DetailCardProps) {
             : 'rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)',
           transition: isHovered ? 'transform 0.1s ease-out' : 'transform 0.5s ease-out',
         }}
-        className="relative rounded-2xl card-3d p-6 sm:p-7 border border-sky-400/20 hover:border-sky-400/60 transition-colors duration-300 flex flex-col items-center text-center overflow-hidden cursor-pointer group"
+        className="relative rounded-3xl p-6 sm:p-7 bg-gradient-to-b from-[#02050e] via-[#07142c] to-[#010207] border border-sky-400/30 hover:border-sky-300/80 transition-all duration-300 flex flex-col items-center text-center overflow-hidden cursor-pointer group shadow-[0_20px_45px_rgba(0,0,0,0.95),inset_0_1px_2px_rgba(255,255,255,0.18)]"
       >
+        {/* Top Edge Specular Metallic Highlight */}
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+
         {/* Dynamic Specular 3D Light Reflection */}
         {isHovered && (
           <div
-            className="absolute inset-0 pointer-events-none rounded-2xl opacity-40 transition-opacity duration-300"
+            className="absolute inset-0 pointer-events-none rounded-3xl opacity-40 transition-opacity duration-300"
             style={{
               background: `radial-gradient(circle at ${shinePos.x}% ${shinePos.y}%, rgba(56, 189, 248, 0.45) 0%, transparent 60%)`,
             }}
           />
         )}
 
-        {/* 3D Elevated Pedestal Base for Icon */}
-        <div className="relative mb-4 translate-z-30">
-          <div className="absolute inset-0 rounded-2xl bg-sky-500/20 blur-xl animate-pulse-glow" />
-          <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl pedestal-3d flex items-center justify-center p-2.5 transition-transform duration-300 group-hover:scale-110">
+        {/* 3D Elevated Pedestal Base for Icon (Preto Nobre com Borda Platina/Safira) */}
+        <div className="relative mb-5 translate-z-30">
+          <div className="absolute inset-0 rounded-2xl bg-sky-500/25 blur-xl animate-pulse-glow" />
+          <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-gradient-to-b from-[#13274f] via-[#081328] to-[#02050d] border border-sky-300/50 shadow-[0_10px_25px_rgba(0,0,0,0.9),inset_0_2px_4px_rgba(255,255,255,0.4)] flex items-center justify-center p-2.5 transition-transform duration-300 group-hover:scale-110">
             <div className="animate-float-3d">{icon}</div>
           </div>
         </div>
 
-        {/* 3D Dimensional Value (Stands out sharply) */}
-        <span className="text-2xl sm:text-3xl md:text-4xl font-serif-luxury font-extrabold text-white tracking-tight tabular-nums text-3d-glow translate-z-20">
+        {/* 3D Dimensional Value (Branco Puro em Destaque Alto Relevo) */}
+        <span className="text-2xl sm:text-3xl md:text-4xl font-serif-luxury font-black text-white tracking-tight tabular-nums drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] translate-z-20">
           {value}
         </span>
 
         {/* Label with 3D Depth */}
-        <span className="mt-1.5 text-xs sm:text-sm font-semibold tracking-wide text-slate-300 translate-z-10">
+        <span className="mt-1.5 text-xs sm:text-sm font-semibold tracking-wide text-slate-200 translate-z-10">
           {label}
         </span>
 
         {/* Subtle Bottom 3D Bevel Bar */}
-        <div className="w-10 h-0.5 rounded-full bg-gradient-to-r from-transparent via-sky-400/50 to-transparent mt-3 group-hover:w-16 group-hover:via-sky-400 transition-all duration-300" />
+        <div className="w-10 h-0.5 rounded-full bg-gradient-to-r from-transparent via-sky-400/60 to-transparent mt-3 group-hover:w-20 group-hover:via-sky-300 transition-all duration-300" />
       </div>
     </div>
   );
@@ -130,25 +133,28 @@ export function PropertyDetails() {
   ];
 
   return (
-    <section className="py-14 px-4 sm:px-6 md:px-8 max-w-5xl mx-auto">
+    <section className="py-14 px-4 sm:px-6 md:px-8 max-w-5xl mx-auto relative">
+      {/* Moldura de Fundo em Degradê Preto com Azul Safira Noturno */}
+      <div className="absolute inset-0 -mx-4 sm:-mx-8 rounded-[40px] bg-gradient-to-b from-[#010308] via-[#051126]/80 to-[#010308] border border-white/5 pointer-events-none -z-10 shadow-[0_25px_60px_rgba(0,0,0,0.9)]" />
+
       {/* 3D Glowing Section Header */}
       <div className="text-center mb-12 relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-12 bg-sky-500/10 blur-2xl pointer-events-none rounded-full" />
-        <h2 className="relative text-2xl sm:text-4xl font-serif-luxury font-extrabold text-white tracking-[0.2em] uppercase text-3d-glow">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-14 bg-sky-500/10 blur-2xl pointer-events-none rounded-full" />
+        <h2 className="relative text-2xl sm:text-4xl font-serif-luxury font-black text-white tracking-[0.2em] uppercase text-3d-glow">
           DETALHES DO IMÓVEL
         </h2>
         <div className="flex items-center justify-center gap-2 mt-3">
-          <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-sky-400" />
-          <div className="w-2 h-2 rotate-45 bg-sky-400 shadow-[0_0_10px_#38bdf8]" />
-          <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-sky-400" />
+          <div className="w-8 h-px bg-gradient-to-r from-transparent to-sky-400" />
+          <div className="w-1.5 h-1.5 rotate-45 bg-sky-300 shadow-[0_0_8px_#38bdf8]" />
+          <div className="w-8 h-px bg-gradient-to-l from-transparent to-sky-400" />
         </div>
       </div>
 
-      {/* Grid of 6 Interactive 3D Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-        {items.map((item, idx) => (
+      {/* Grid of 6 Detailed 3D Luxury Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        {items.map((item, index) => (
           <Card3DTilt
-            key={idx}
+            key={index}
             value={item.value}
             label={item.label}
             icon={item.icon}

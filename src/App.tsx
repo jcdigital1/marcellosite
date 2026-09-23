@@ -19,7 +19,7 @@ export default function App() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (
-    <div className="relative min-h-screen bg-[#070b16] text-slate-100 flex flex-col font-sans-modern selection:bg-sky-500/30 selection:text-white">
+    <div className="relative min-h-screen bg-[#020409] bg-gradient-to-b from-[#010206] via-[#050e24] to-[#010206] text-slate-100 flex flex-col font-sans-modern selection:bg-sky-500/30 selection:text-white">
       {/* Fundo Arquitetônico com Efeitos Estilo Motion e Luzes Suaves em Movimento */}
       <RealEstateBackground />
 
