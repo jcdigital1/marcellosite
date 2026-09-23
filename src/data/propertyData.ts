@@ -91,7 +91,8 @@ export const BROKER_INFO = {
   profession: 'Corretor de imóveis',
   creci: 'CRECI 66632',
   city: 'Bom Despacho - MG',
-  whatsappUrl: 'https://wa.link/qq6qs2',
+  whatsappUrl:
+    'https://api.whatsapp.com/send?phone=553799855765&text=Ol%C3%A1%2C%20vim%20pelo%20site%20e%20tenho%20interesse%20no%20im%C3%B3vel.',
 };
 
 export const PROPERTY_INFO = {
